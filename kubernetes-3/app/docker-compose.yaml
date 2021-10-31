@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  web:
+    image: dkuser2/otus-ms-lesson3:v1
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      GREETING: "Hey"
+      PGPASSWORD: "postgres"
+      DATABASE_URI: 'postgresql://postgres:pgpostgres@db/postgres'
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pgpostgres
