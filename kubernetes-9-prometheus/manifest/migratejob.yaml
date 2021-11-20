@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-job6
+  labels:
+    app: migrate-job
+spec:
+  template:
+    metadata:
+      name: migrate-job
+      labels:
+        app: migrate-job
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-pg
+        image: waisbrot/wait
+        env:
+          - name: TARGETS
+            value: postgres:5432
+      containers:
+      - name: insert
+        env:
+          - name: DATABASE_URI
+            valueFrom:
+              secretKeyRef:
+                name: hello-secret
+                key: DATABASE_URI
+        image: dkuser2/otus-ms-lesson8:v2
+        command: ["flask", "db", "upgrade"]
+  backoffLimit: 0

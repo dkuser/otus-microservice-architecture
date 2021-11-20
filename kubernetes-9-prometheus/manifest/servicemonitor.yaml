@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello
+  namespace: monitoring
+spec:
+  jobLabel: hello
+  namespaceSelector:
+    matchNames:
+    - myapp
+  selector:
+    matchLabels:
+      app: hello-py-app
+  endpoints:
+  - interval: 15s
+    port: web
+    path: /metrics
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-nginx-monitor
+  namespace: ingress-nginx
+  labels:
+    app-monitor: ingress-nginx
+spec:
+  ports:
+    - name: httpmetric
+      protocol: TCP
+      appProtocol: http
+      port: 80
+      targetPort: 10254
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ingress-nginx
+  namespace: monitoring
+spec:
+  jobLabel: ingress-nginx
+  namespaceSelector:
+    matchNames:
+    - ingress-nginx
+  selector:
+    matchLabels:
+      app-monitor: ingress-nginx
+  endpoints:
+  - interval: 15s
+    port: httpmetric
+    path: /metrics
