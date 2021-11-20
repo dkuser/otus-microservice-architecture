@@ -14,17 +14,21 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add stable https://charts.helm.sh/stable
 helm repo update
 helm install -n monitoring prom prometheus-community/kube-prometheus-stack -f prometheus.yaml --atomic
-
-
 kubectl apply -f manifest
 ```
 
-## Проверка
+## Команды
+**Grafana**, user:password - admin:prom-operator
 ```
-newman run user.postman_collection.json
-```
-
-minikube service -n monitoring prom-prometheus-nodeport
-
 minikube service -n monitoring prometheus-grafana-nodeport
-admin:prom-operator
+```
+**Prometheus**
+```
+minikube service -n monitoring prom-prometheus-nodeport
+```
+
+## Dashboard
+Manigest [grafana.yaml](manifest/grafana.yaml).
+![](grafana.PNG)
+
+
