@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-job6
+  labels:
+    app: migrate-job
+spec:
+  template:
+    metadata:
+      name: migrate-job
+      labels:
+        app: migrate-job
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: wait-pg
+        image: waisbrot/wait
+        env:
+          - name: TARGETS
+            value: postgres:5432
+      containers:
+      - name: insert
+        env:
+          - name: DJANGO_ENV
+            value: DEV
+          - name: DJANGO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: hello-secret
+                key: DJANGO_SECRET_KEY
+          - name: DATABASE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: DATABASE_NAME
+          - name: DATABASE_USER
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: DATABASE_USER
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: hello-secret
+                key: DATABASE_PASSWORD
+          - name: DATABASE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: DATABASE_HOST
+          - name: DATABASE_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: DATABASE_PORT
+          - name: GREETING
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: GREETING
+        image: dkuser2/otus-bff-lesson12:v1
+        command: ["python", "manage.py", "migrate"]
+  backoffLimit: 0

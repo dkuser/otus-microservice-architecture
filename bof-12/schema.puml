@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant "Ingress"
+participant "Api service"
+participant "Database"
+
+User -> "Ingress" : Запрос
+
+"Ingress" -> "Api service" : Запрос
+"Api service" -> "Database" : Запрос
+
+"Database" -> "Api service" : Ответ
+"Api service" -> "Ingress" : Ответ
+"Ingress" -> "User" : Ответ
+
+@enduml
