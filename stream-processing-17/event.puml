@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant BillingService
+participant OrderService
+participant Kafka
+participant NotificationService
+
+group  "Регистрация"
+User -> BillingService ++: Регистрация
+return User
+end
+
+group  "Пополнение"
+User -> BillingService ++ : Положить деньги
+return User
+end
+
+group  "Заказ"
+User -> OrderService ++: Оформить заказ
+OrderService -> BillingService ++ : Снять деньги
+return OrderService
+OrderService -> Kafka: PaymentOrderChanged
+return User
+
+Kafka -> NotificationService ++: PaymentOrderChanged
+alt "Опачено"
+    NotificationService -> NotificationService
+    note right: Письмо счастья
+else "Денег нет"
+    NotificationService -> NotificationService
+    note right: Письмо Горя
+end
+deactivate NotificationService
+end
+
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor User
+participant OrderService
+participant BillingService
+participant NotificationService
+
+User -> BillingService ++: Регистрация
+return User
+
+User -> BillingService ++ : Положить деньги
+return User
+
+User -> OrderService ++: Оформить заказ
+OrderService -> BillingService ++ : Снять деньги
+return OrderService
+
+alt "Деньги списались"
+    OrderService -> NotificationService ++ : Письмо счастья
+    return OrderService
+else "Денег нет"
+    OrderService -> NotificationService ++: Письмо горя
+    return OrderService
+end
+return User
+
+@enduml
