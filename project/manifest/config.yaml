@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-config
+data:
+  DATABASE_NAME: "postgres"
+  DATABASE_USER: "postgres"
+  DATABASE_HOST: "postgres"
+  DATABASE_PORT: "5432"
+  STORE_SERVICE: "http://store:8000"
+  TRANSACTION_SERVICE: "http://transaction:8000"
+  DELIVERY_SERVICE: "http://delivery:8000"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hello-secret
+type: Opaque
+data:
+  DJANGO_SECRET_KEY: XiZxMC0rJi11OV5fYzBeITNlYSM3QF81aV5oZnB5LWJycSZlYnE3JSpxbGIwbSRiZHU=
+  DATABASE_PASSWORD: cGdwb3N0Z3Jlcw==

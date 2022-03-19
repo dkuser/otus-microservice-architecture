@@ -1,0 +1,77 @@
+version: "3.7"
+
+x-app-config: &app-config
+  DJANGO_ENV: dev
+  DJANGO_SECRET_KEY: secret_key
+  DATABASE_NAME: postgres
+  DATABASE_USER: postgres
+  DATABASE_PASSWORD: pgpassword
+  DATABASE_HOST: db
+  DATABASE_PORT: 5432
+  POSTGRES_PASSWORD: pgpassword
+  STORE_SERVICE: "http://store:8000"
+  TRANSACTION_SERVICE: "http://transaction:8000"
+  DELIVERY_SERVICE: "http://delivery:8000"
+
+services:
+  saga:
+    image: dkuser2/otus-saga-28:v1
+    build: .
+    command: make saga
+    volumes:
+      - .:/app
+    environment: *app-config
+    depends_on:
+      - db
+      - store
+      - transaction
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+
+  store:
+    build: .
+    command: make store
+    volumes:
+      - .:/app
+    environment:
+      <<: *app-config
+    depends_on:
+      - db
+    ports:
+      - "8001:8000"
+    stdin_open: true
+    tty: true
+
+  transaction:
+    build: .
+    command: make transaction
+    volumes:
+      - .:/app
+    environment: *app-config
+    depends_on:
+      - db
+    ports:
+      - "8002:8000"
+    stdin_open: true
+    tty: true
+
+  delivery:
+    build: .
+    command: make delivery
+    volumes:
+      - .:/app
+    environment: *app-config
+    depends_on:
+      - db
+    ports:
+      - "8003:8000"
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:12.5-alpine
+    environment: *app-config
+    ports:
+      - "5432:5432"
