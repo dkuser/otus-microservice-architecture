@@ -4,10 +4,13 @@ saga:
 store:
 	cd store && python manage.py runserver 0:8000
 
+finder:
+	cd finder && python manage.py runserver 0:8000
+
 transaction:
 	cd transaction && python manage.py runserver 0:8000
 
 delivery:
 	cd delivery && python manage.py runserver 0:8000
 
-.PHONY: saga store transaction delivery
+.PHONY: saga store transaction delivery finder

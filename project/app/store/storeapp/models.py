@@ -14,6 +14,12 @@ class Product(models.Model):
     cost = models.IntegerField()
     quantity = models.IntegerField()
 
+    def save(self, *args, **kwargs) -> None:
+        super().save(*args, **kwargs)
+
+        from storeapp.services import emit_change_product
+        emit_change_product(self)
+
 
 class GoodMovement(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
