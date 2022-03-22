@@ -70,3 +70,5 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ]
 }
+
+KAFKA_SERVER = os.environ["KAFKA_SERVER"]

@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import serializers, filters
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -14,5 +16,9 @@ class ProductViewSet(ReadOnlyModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     filter_backends = [filters.SearchFilter]
-    search_fields = ['item']
+    search_fields = ["item"]
+
+    @method_decorator(cache_page(60 * 60))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 

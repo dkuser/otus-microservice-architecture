@@ -18,6 +18,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
         from storeapp.services import emit_change_product
+
         emit_change_product(self)
 
 

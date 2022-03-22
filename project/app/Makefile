@@ -7,6 +7,9 @@ store:
 finder:
 	cd finder && python manage.py runserver 0:8000
 
+finder_consumer:
+	cd finder && python manage.py consumer
+
 transaction:
 	cd transaction && python manage.py runserver 0:8000
 

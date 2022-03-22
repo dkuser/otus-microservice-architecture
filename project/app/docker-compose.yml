@@ -12,7 +12,8 @@ x-app-config: &app-config
   STORE_SERVICE: "http://store:8000"
   TRANSACTION_SERVICE: "http://transaction:8000"
   DELIVERY_SERVICE: "http://delivery:8000"
-  KAFKA: kafka:9092
+  KAFKA_SERVER: "kafka:9092"
+  REDIS_SERVER: "redis:6379"
 
 services:
   saga:
@@ -41,6 +42,7 @@ services:
     depends_on:
       - db
       - kafka
+      - redis
     ports:
       - "8001:8000"
     stdin_open: true
@@ -55,9 +57,21 @@ services:
       <<: *app-config
     depends_on:
       - db
-      - kafka
     ports:
       - "8004:8000"
+    stdin_open: true
+    tty: true
+
+  finder_consumer:
+    build: .
+    command: make finder_consumer
+    volumes:
+      - .:/app
+    environment:
+      <<: *app-config
+    depends_on:
+      - db
+      - kafka
     stdin_open: true
     tty: true
 
@@ -127,3 +141,8 @@ services:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"

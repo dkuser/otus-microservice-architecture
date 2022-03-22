@@ -7,17 +7,16 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('item', models.CharField(max_length=200)),
-                ('cost', models.IntegerField()),
-                ('quantity', models.IntegerField()),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("item", models.CharField(max_length=200)),
+                ("cost", models.IntegerField()),
+                ("quantity", models.IntegerField()),
             ],
         ),
     ]
