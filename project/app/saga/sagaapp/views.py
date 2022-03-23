@@ -2,7 +2,6 @@ from rest_framework import mixins, serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 
 from sagaapp.models import Order
-from sagaapp.service import book_order
 from sagaapp.services import clean_data, OrderService
 
 
@@ -14,7 +13,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> Order:
         order = Order(**validated_data)
-        return book_order(order)
+        OrderService(order).book()
+        return order
 
 
 class OrderViewSet(
@@ -35,3 +35,4 @@ class FlushSerializer(serializers.Serializer):
 
 class FlushViewSet(mixins.CreateModelMixin, GenericViewSet):
     serializer_class = FlushSerializer
+    queryset = Order.objects.all()

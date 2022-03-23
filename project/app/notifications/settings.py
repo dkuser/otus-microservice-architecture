@@ -1,5 +1,4 @@
 import os
-import sys
 from pathlib import Path
 
 
@@ -11,7 +10,7 @@ ALLOWED_HOSTS = "*"
 
 
 INSTALLED_APPS = [
-    "sagaapp",
+    "notifyapp",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -20,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
 ]
+
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -32,8 +32,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "urls"
-AUTH_USER_MODEL = "auth.User"
-
 
 TEMPLATES = [
     {
@@ -73,7 +71,36 @@ REST_FRAMEWORK = {
     ]
 }
 
-STORE_SERVICE = os.environ["STORE_SERVICE"]
-TRANSACTION_SERVICE = os.environ["TRANSACTION_SERVICE"]
-DELIVERY_SERVICE = os.environ["DELIVERY_SERVICE"]
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+    "loggers": {
+        "django.db.backends": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        }
+    },
+}
+
 KAFKA_SERVER = os.environ["KAFKA_SERVER"]
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f'redis://{os.environ["REDIS_SERVER"]}/0',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MAX_ENTRIES": 1000,
+        },
+    }
+}

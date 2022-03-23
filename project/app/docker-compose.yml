@@ -27,8 +27,9 @@ services:
       - db
       - store
       - transaction
+      - delivery
     ports:
-      - "8000:8000"
+      - "8006:8000"
     stdin_open: true
     tty: true
 
@@ -101,6 +102,33 @@ services:
     stdin_open: true
     tty: true
 
+  notifications:
+    build: .
+    command: make notifications
+    volumes:
+      - .:/app
+    environment:
+      <<: *app-config
+    depends_on:
+      - db
+    ports:
+      - "8005:8000"
+    stdin_open: true
+    tty: true
+
+  notifications_consumer:
+    build: .
+    command: make notifications_consumer
+    volumes:
+      - .:/app
+    environment:
+      <<: *app-config
+    depends_on:
+      - db
+      - kafka
+    stdin_open: true
+    tty: true
+
   db:
     image: postgres:12.5-alpine
     environment: *app-config
@@ -146,3 +174,17 @@ services:
     image: redis:6.2
     ports:
       - "6379:6379"
+
+  web:
+    image: nginx
+    volumes:
+      - ./nginx/my.conf:/etc/nginx/nginx.conf/:ro
+    ports:
+      - "8000:80"
+    depends_on:
+      - saga
+      - store
+      - transaction
+      - delivery
+    environment:
+      - NGINX_PORT=80

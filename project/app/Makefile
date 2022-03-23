@@ -16,4 +16,10 @@ transaction:
 delivery:
 	cd delivery && python manage.py runserver 0:8000
 
-.PHONY: saga store transaction delivery finder
+notifications:
+	cd notifications && python manage.py runserver 0:8000
+
+notifications_consumer:
+	cd notifications && python manage.py consumer
+
+.PHONY: saga store transaction delivery finder finder_consumer notifications notifications_consumer

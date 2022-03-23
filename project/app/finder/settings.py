@@ -100,7 +100,7 @@ CACHES = {
         "LOCATION": f'redis://{os.environ["REDIS_SERVER"]}/0',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            'MAX_ENTRIES': 1000
-        }
+            "MAX_ENTRIES": 1000,
+        },
     }
 }

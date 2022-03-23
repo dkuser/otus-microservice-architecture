@@ -21,4 +21,3 @@ class ProductViewSet(ReadOnlyModelViewSet):
     @method_decorator(cache_page(60 * 60))
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-
