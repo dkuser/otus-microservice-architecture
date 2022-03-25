@@ -1,7 +1,6 @@
 import json
-from typing import Any
+from typing import Any, Optional
 
-from django.forms import model_to_dict
 from kafka import KafkaProducer
 
 from sagaapp.models import Order
@@ -12,9 +11,16 @@ def _value_serializer(value: Any) -> bytes:
     return json.dumps(value).encode("utf-8")
 
 
-_producer = KafkaProducer(
-    bootstrap_servers=KAFKA_SERVER, value_serializer=_value_serializer
-)
+_producer: Optional[KafkaProducer] = None
+
+
+def get_producer() -> KafkaProducer:
+    global _producer
+    if _producer is None:
+        _producer = KafkaProducer(
+            bootstrap_servers=KAFKA_SERVER, value_serializer=_value_serializer
+        )
+    return _producer
 
 
 def emit_order(order: Order) -> None:
@@ -28,5 +34,5 @@ def emit_order(order: Order) -> None:
             "user_id": 0,
             "item": f"Fail new order {order.id}, product: {order.product_id} - {order.result}",
         }
-    _producer.send("logs", attributes)
-    _producer.flush()
+    get_producer().send("logs", attributes)
+    get_producer().flush()

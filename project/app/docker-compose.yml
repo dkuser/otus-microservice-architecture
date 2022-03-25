@@ -3,7 +3,6 @@ version: "3.7"
 x-app-config: &app-config
   DJANGO_ENV: dev
   DJANGO_SECRET_KEY: secret_key
-  DATABASE_NAME: postgres
   DATABASE_USER: postgres
   DATABASE_PASSWORD: pgpassword
   DATABASE_HOST: db
@@ -14,6 +13,8 @@ x-app-config: &app-config
   DELIVERY_SERVICE: "http://delivery:8000"
   KAFKA_SERVER: "kafka:9092"
   REDIS_SERVER: "redis:6379"
+  ROOT_PASSWORD: "admin"
+  ROOT_TOKEN: "123qwe0-="
 
 services:
   saga:
@@ -22,7 +23,9 @@ services:
     command: make saga
     volumes:
       - .:/app
-    environment: *app-config
+    environment:
+      <<: *app-config
+      DATABASE_NAME: postgres
     depends_on:
       - db
       - store
@@ -40,6 +43,7 @@ services:
       - .:/app
     environment:
       <<: *app-config
+      DATABASE_NAME: store
     depends_on:
       - db
       - kafka
@@ -56,6 +60,7 @@ services:
       - .:/app
     environment:
       <<: *app-config
+      DATABASE_NAME: finder
     depends_on:
       - db
     ports:
@@ -70,6 +75,7 @@ services:
       - .:/app
     environment:
       <<: *app-config
+      DATABASE_NAME: finder
     depends_on:
       - db
       - kafka
@@ -81,7 +87,9 @@ services:
     command: make transaction
     volumes:
       - .:/app
-    environment: *app-config
+    environment:
+      <<: *app-config
+      DATABASE_NAME: transaction
     depends_on:
       - db
     ports:
@@ -94,7 +102,9 @@ services:
     command: make delivery
     volumes:
       - .:/app
-    environment: *app-config
+    environment:
+      <<: *app-config
+      DATABASE_NAME: delivery
     depends_on:
       - db
     ports:
@@ -109,6 +119,7 @@ services:
       - .:/app
     environment:
       <<: *app-config
+      DATABASE_NAME: notifications
     depends_on:
       - db
     ports:
@@ -123,6 +134,7 @@ services:
       - .:/app
     environment:
       <<: *app-config
+      DATABASE_NAME: notifications
     depends_on:
       - db
       - kafka

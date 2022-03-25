@@ -27,6 +27,11 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
 
 
+class ProductClientViewSet(ReadOnlyModelViewSet):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+
 class FlushSerializer(serializers.Serializer):
     def create(self, validated_data: dict) -> dict:
         clean_database()

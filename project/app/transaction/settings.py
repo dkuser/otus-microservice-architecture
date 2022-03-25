@@ -1,5 +1,8 @@
 import os
+import sys
 from pathlib import Path
+
+sys.path.append("/app/common")
 
 
 DJANGO_ENV = os.environ["DJANGO_ENV"]
@@ -18,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 

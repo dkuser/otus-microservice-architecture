@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from sagaapp.models import Order
 from .services import TransactionService, DeliveryService, StoreService
 
@@ -7,3 +9,4 @@ def clean_data() -> None:
     DeliveryService.flush()
     TransactionService.flush()
     StoreService.flush()
+    User.objects.filter(is_superuser=False).delete()

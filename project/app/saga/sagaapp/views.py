@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import mixins, serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 
@@ -36,3 +37,19 @@ class FlushSerializer(serializers.Serializer):
 class FlushViewSet(mixins.CreateModelMixin, GenericViewSet):
     serializer_class = FlushSerializer
     queryset = Order.objects.all()
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "password")
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data: dict) -> Order:
+        return User.objects.create_user(**validated_data)
+
+
+class UserViewSet(mixins.CreateModelMixin, GenericViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    permission_classes = []

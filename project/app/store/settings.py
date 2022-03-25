@@ -1,5 +1,8 @@
 import os
+import sys
 from pathlib import Path
+
+sys.path.append("/app/common")
 
 
 DJANGO_ENV = os.environ["DJANGO_ENV"]
@@ -18,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 
@@ -68,7 +72,11 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ]
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAdminUser",
+    ],
 }
 
 KAFKA_SERVER = os.environ["KAFKA_SERVER"]

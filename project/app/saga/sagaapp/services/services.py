@@ -7,18 +7,22 @@ from requests import RequestException, HTTPError, Response
 from rest_framework.exceptions import ValidationError
 
 from sagaapp.models import Order
-from settings import STORE_SERVICE, TRANSACTION_SERVICE, DELIVERY_SERVICE
+from settings import STORE_SERVICE, TRANSACTION_SERVICE, DELIVERY_SERVICE, ROOT_TOKEN
 
 
 class BaseService(abc.ABC):
     url: str
+    prefix: str
 
     @classmethod
     def _request(
         cls, method: str, path: str, raise_for_status: bool = True, **kwargs: Any
     ) -> Response:
         try:
-            response = requests.request(method, f"{cls.url}/{path}", **kwargs)
+            headers = {"Authorization": f"Token {ROOT_TOKEN}"}
+            response = requests.request(
+                method, f"{cls.url}/{cls.prefix}{path}", headers=headers, **kwargs
+            )
             if raise_for_status:
                 response.raise_for_status()
         except HTTPError as e:
@@ -53,6 +57,7 @@ class BaseService(abc.ABC):
 
 class TransactionService(BaseService):
     url = TRANSACTION_SERVICE
+    prefix = "transaction/"
 
     @classmethod
     def book(cls, order: Order) -> None:
@@ -62,6 +67,7 @@ class TransactionService(BaseService):
 
 class StoreService(BaseService):
     url = STORE_SERVICE
+    prefix = "store/"
 
     @classmethod
     def book(cls, order: Order) -> None:
@@ -77,6 +83,7 @@ class StoreService(BaseService):
 
 class DeliveryService(BaseService):
     url = DELIVERY_SERVICE
+    prefix = "delivery/"
 
     @classmethod
     def book(cls, order: Order) -> None:

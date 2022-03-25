@@ -1,6 +1,9 @@
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
+
+sys.path.append("/app/common")
 
 
 DJANGO_ENV = os.environ["DJANGO_ENV"]
@@ -20,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "django_prometheus",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -73,10 +77,18 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ]
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 
 STORE_SERVICE = os.environ["STORE_SERVICE"]
 TRANSACTION_SERVICE = os.environ["TRANSACTION_SERVICE"]
 DELIVERY_SERVICE = os.environ["DELIVERY_SERVICE"]
 KAFKA_SERVER = os.environ["KAFKA_SERVER"]
+ROOT_TOKEN = os.environ["ROOT_TOKEN"]
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+}

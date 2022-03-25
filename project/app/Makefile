@@ -1,25 +1,32 @@
 saga:
-	cd saga && python manage.py runserver 0:8000
+	cd saga && make -f ../Makefile run
 
 store:
-	cd store && python manage.py runserver 0:8000
+	cd store && make -f ../Makefile run
 
 finder:
-	cd finder && python manage.py runserver 0:8000
+	cd finder && make -f ../Makefile run
 
 finder_consumer:
 	cd finder && python manage.py consumer
 
 transaction:
-	cd transaction && python manage.py runserver 0:8000
+	cd transaction && make -f ../Makefile run
 
 delivery:
-	cd delivery && python manage.py runserver 0:8000
+	cd delivery && make -f ../Makefile run
 
 notifications:
-	cd notifications && python manage.py runserver 0:8000
+	cd notifications && make -f ../Makefile run
 
 notifications_consumer:
 	cd notifications && python manage.py consumer
 
+create_db:
+	echo "SELECT 'CREATE DATABASE $(DATABASE_NAME)' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$(DATABASE_NAME)')\gexec" | PGPASSWORD=$(DATABASE_PASSWORD) psql -h $(DATABASE_HOST) -U $(DATABASE_USER)
+
+run: create_db
+	python manage.py migrate && python manage.py runserver 0:8000
+
 .PHONY: saga store transaction delivery finder finder_consumer notifications notifications_consumer
+.PHONY: create_db run
