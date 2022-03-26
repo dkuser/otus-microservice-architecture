@@ -28,5 +28,15 @@ create_db:
 run: create_db
 	python manage.py migrate && python manage.py runserver 0:8000
 
+makemigrations:
+	cd saga && python manage.py makemigrations
+	cd transaction && DATABASE_NAME=transaction python manage.py makemigrations
+	cd notifications && DATABASE_NAME=notifications python manage.py makemigrations
+
+migrate:
+	cd saga && python manage.py migrate
+	cd transaction && DATABASE_NAME=transaction python manage.py migrate
+	cd notifications && DATABASE_NAME=notifications python manage.py migrate
+
 .PHONY: saga store transaction delivery finder finder_consumer notifications notifications_consumer
-.PHONY: create_db run
+.PHONY: create_db run makemigrations

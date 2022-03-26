@@ -2,6 +2,7 @@ import os
 
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from .authentication import JWTAuthenticationVirtualUser
 
 
 def init_migrations() -> None:

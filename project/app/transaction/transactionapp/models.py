@@ -1,38 +1,46 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 from django.db import models, transaction
+from django.db.models import CASCADE
+from django.db.transaction import atomic
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
-from solo.models import SingletonModel
 
 
 class TransactionException(ValidationError):
     pass
 
 
-class Balance(SingletonModel):
+class Balance(models.Model):
+    user_id = models.IntegerField(default=0)
     sum = models.IntegerField(default=0)
 
 
 class Transaction(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     sum = models.IntegerField()
-    order_id = models.IntegerField(unique=True)
+    order_id = models.IntegerField(unique=True, null=True)
+    balance = models.ForeignKey(Balance, on_delete=CASCADE)
 
     def save(self, *args, **kwargs) -> None:
         with transaction.atomic():
-            balance = Balance.get_solo()
-            balance.sum -= self.sum
-            if balance.sum < 0:
+            self.balance.sum += self.sum
+            if self.balance.sum < 0:
                 raise TransactionException("Не хватает денег")
-            balance.save()
+            self.balance.save()
             super().save(*args, **kwargs)
 
     def rollback(self) -> None:
         with transaction.atomic():
-            balance = Balance.get_solo()
-            balance.sum += self.sum
-            balance.save()
+            self.balance.sum -= self.sum
+            self.balance.save()
             self.delete()
+
+    @atomic
+    def save_with_user(self, user_id: int) -> None:
+        balance, _ = Balance.objects.get_or_create(user_id=user_id, defaults={"sum": 0})
+        self.balance = balance
+        self.save()
 
 
 @admin.register(Transaction)

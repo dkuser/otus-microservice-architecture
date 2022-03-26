@@ -26,13 +26,13 @@ def get_producer() -> KafkaProducer:
 def emit_order(order: Order) -> None:
     if order.result is None:
         attributes = {
-            "user_id": 0,
-            "item": f"Create new order {order.id}, product: {order.product_id} x {order.quantity} = {order.sum}",
+            "user_id": order.user.id,
+            "item": f"Create new order {order.id} by user: {order.user.username}, product: {order.product_id} x {order.quantity} = {order.sum}",
         }
     else:
         attributes = {
-            "user_id": 0,
-            "item": f"Fail new order {order.id}, product: {order.product_id} - {order.result}",
+            "user_id": order.user.id,
+            "item": f"Fail new order {order.id} by user: {order.user.username}, product: {order.product_id} - {order.result}",
         }
     get_producer().send("logs", attributes)
     get_producer().flush()

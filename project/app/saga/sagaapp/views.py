@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import mixins, serializers
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 
 from sagaapp.models import Order
@@ -9,8 +10,8 @@ from sagaapp.services import clean_data, OrderService
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ("product_id", "quantity", "delivery_date", "id", "result")
-        read_only_fields = ["result"]
+        fields = ("product_id", "quantity", "delivery_date", "id", "result", "user")
+        read_only_fields = ["user"]
 
     def create(self, validated_data: dict) -> Order:
         order = Order(**validated_data)
@@ -23,6 +24,9 @@ class OrderViewSet(
 ):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
+
+    def perform_create(self, serializer: Serializer) -> None:
+        serializer.save(user=self.request.user)
 
     def perform_destroy(self, instance: Order) -> None:
         OrderService(instance).rollback()

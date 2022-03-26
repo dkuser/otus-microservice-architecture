@@ -7,7 +7,8 @@ from requests import RequestException, HTTPError, Response
 from rest_framework.exceptions import ValidationError
 
 from sagaapp.models import Order
-from settings import STORE_SERVICE, TRANSACTION_SERVICE, DELIVERY_SERVICE, ROOT_TOKEN
+from settings import STORE_SERVICE, TRANSACTION_SERVICE, DELIVERY_SERVICE, ROOT_TOKEN, FINDER_SERVICE, \
+    NOTIFICATION_SERVICE
 
 
 class BaseService(abc.ABC):
@@ -61,7 +62,7 @@ class TransactionService(BaseService):
 
     @classmethod
     def book(cls, order: Order) -> None:
-        params = {"sum": order.sum, "order_id": order.id}
+        params = {"sum": -order.sum, "order_id": order.id, "user_id": order.user_id}
         cls._book_in_service(params)
 
 
@@ -89,3 +90,13 @@ class DeliveryService(BaseService):
     def book(cls, order: Order) -> None:
         params = {"date": order.delivery_date, "order_id": order.id}
         cls._book_in_service(params)
+
+
+class FinerService(BaseService):
+    url = FINDER_SERVICE
+    prefix = "finder/"
+
+
+class NotificationService(BaseService):
+    url = NOTIFICATION_SERVICE
+    prefix = "notifications/"
