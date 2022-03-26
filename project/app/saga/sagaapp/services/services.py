@@ -7,8 +7,14 @@ from requests import RequestException, HTTPError, Response
 from rest_framework.exceptions import ValidationError
 
 from sagaapp.models import Order
-from settings import STORE_SERVICE, TRANSACTION_SERVICE, DELIVERY_SERVICE, ROOT_TOKEN, FINDER_SERVICE, \
-    NOTIFICATION_SERVICE
+from settings import (
+    STORE_SERVICE,
+    TRANSACTION_SERVICE,
+    DELIVERY_SERVICE,
+    ROOT_TOKEN,
+    FINDER_SERVICE,
+    NOTIFICATION_SERVICE,
+)
 
 
 class BaseService(abc.ABC):

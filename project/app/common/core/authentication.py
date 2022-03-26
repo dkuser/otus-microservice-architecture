@@ -10,6 +10,6 @@ class JWTAuthenticationVirtualUser(JWTAuthentication):
         try:
             user_id = validated_token[api_settings.USER_ID_CLAIM]
         except KeyError:
-            raise InvalidToken(_('Token contained no recognizable user identification'))
+            raise InvalidToken(_("Token contained no recognizable user identification"))
 
         return User(id=user_id)

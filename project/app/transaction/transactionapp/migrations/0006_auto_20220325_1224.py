@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('transactionapp', '0005_auto_20220325_1216'),
+        ("transactionapp", "0005_auto_20220325_1216"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='balance',
-            name='user',
+            model_name="balance",
+            name="user",
         ),
         migrations.AddField(
-            model_name='balance',
-            name='user_id',
+            model_name="balance",
+            name="user_id",
             field=models.IntegerField(default=0),
         ),
     ]

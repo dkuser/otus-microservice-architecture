@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_prometheus",
     "rest_framework.authtoken",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [

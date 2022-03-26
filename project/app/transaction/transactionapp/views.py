@@ -12,8 +12,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        exclude = ("balance", )
-        read_only_fields = ("created_at", )
+        exclude = ("balance",)
+        read_only_fields = ("created_at",)
 
     def create(self, validated_data: dict) -> Transaction:
         user_id = validated_data.pop("user_id")
@@ -81,7 +81,9 @@ class UserBalanceViewSet(mixins.ListModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs) -> Response:
-        balance, _ = Balance.objects.get_or_create(user_id=self.request.user.id, defaults={"sum": 0})
+        balance, _ = Balance.objects.get_or_create(
+            user_id=self.request.user.id, defaults={"sum": 0}
+        )
 
         serializer = self.get_serializer(balance)
         return Response(serializer.data)
