@@ -11,6 +11,7 @@ RUN apt-get update -qq \
         gnupg \
         wget \
         postgresql-client \
+        netcat \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \

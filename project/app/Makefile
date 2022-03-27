@@ -22,10 +22,13 @@ notifications:
 notifications_consumer:
 	cd notifications && python manage.py consumer
 
+wait_db:
+	bash /app/wait-for $(DATABASE_HOST):$(DATABASE_PORT) -- echo db connect
+
 create_db:
 	echo "SELECT 'CREATE DATABASE $(DATABASE_NAME)' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$(DATABASE_NAME)')\gexec" | PGPASSWORD=$(DATABASE_PASSWORD) psql -h $(DATABASE_HOST) -U $(DATABASE_USER)
 
-run: create_db
+run: wait_db create_db
 	python manage.py migrate && python manage.py runserver 0:8000
 
 makemigrations:

@@ -3,6 +3,8 @@
 from django.contrib.auth.models import User
 from django.db import migrations
 
+from core import init_migrations
+
 
 class Migration(migrations.Migration):
 
@@ -11,9 +13,7 @@ class Migration(migrations.Migration):
     ]
 
     def forwards_func(apps, schema_editor):
-        # We get the model from the versioned app registry;
-        # if we directly import it, it'll be the wrong version
-        User.objects.create_superuser("admin", "admin@admin.ru", password="admin")
+        init_migrations()
 
     operations = [
         migrations.RunPython(forwards_func),
