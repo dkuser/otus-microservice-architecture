@@ -45,12 +45,12 @@ class Transaction(models.Model):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'created_at', 'sum', 'order_id', 'balance')
 
 
 @admin.register(Balance)
 class BalanceAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'user_id', 'sum')
 
 
 @transaction.atomic()

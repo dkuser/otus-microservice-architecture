@@ -35,12 +35,12 @@ class Delivery(models.Model):
 
 @admin.register(Courier)
 class CourierAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'is_free')
 
 
 @admin.register(Delivery)
 class DeliveryAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'courier', 'order_id', 'date')
 
 
 @transaction.atomic()

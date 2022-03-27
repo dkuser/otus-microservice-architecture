@@ -47,12 +47,12 @@ class GoodMovement(models.Model):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'item', 'cost', 'quantity')
 
 
 @admin.register(GoodMovement)
 class GoodMovementAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'created_at', 'product', 'quantity', 'order_id', 'sum')
 
 
 @transaction.atomic()

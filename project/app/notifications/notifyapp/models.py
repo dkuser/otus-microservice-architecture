@@ -15,4 +15,4 @@ def clean_database() -> None:
 
 @admin.register(Log)
 class LogAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'item', 'user_id', 'created_at')

@@ -1,5 +1,8 @@
 import os
+import sys
 from pathlib import Path
+
+sys.path.append("/app/common")
 
 
 DJANGO_ENV = os.environ["DJANGO_ENV"]

@@ -7,7 +7,7 @@ from core import init_migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("transactionapp", "0001_initial"),
+        ("transactionapp", "0006_auto_20220325_1224"),
     ]
 
     def forwards_func(apps, schema_editor):

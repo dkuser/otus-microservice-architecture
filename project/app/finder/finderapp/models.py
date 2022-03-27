@@ -21,4 +21,4 @@ def clean_database() -> None:
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'item', 'cost', 'quantity')

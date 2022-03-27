@@ -12,7 +12,11 @@ class Order(models.Model):
     result = models.TextField(null=True)
     user = models.ForeignKey(User, on_delete=CASCADE)
 
+    @property
+    def success(self):
+        return self.result is None
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'product_id', 'quantity', 'delivery_date', 'user', "success")
