@@ -20,7 +20,7 @@ x-app-config: &app-config
 
 services:
   saga:
-    image: dkuser2/otus-saga-28:v1
+    image: dkuser2/otus-project:v2
     build: .
     command: make saga
     volumes:

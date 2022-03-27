@@ -12,31 +12,22 @@ spec:
       labels:
         app: transaction-app
     spec:
-      initContainers:
-        - name: wait-pg
-          image: waisbrot/wait
-          env:
-            - name: TARGETS
-              value: postgres:5432
       containers:
       - name: transaction
-        image: dkuser2/otus-saga-28:v1
-        workingDir: /app/transaction
-        command: ["python"]
-        args: ["manage.py", "runserver", "0:8000"]
+        image: dkuser2/otus-project:v1
+        workingDir: /app
+        command: ["make"]
+        args: ["transaction"]
         env:
+          - name: DATABASE_NAME
+            value: transaction
           - name: DJANGO_ENV
-            value: DEV
+            value: dev
           - name: DJANGO_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: hello-secret
                 key: DJANGO_SECRET_KEY
-          - name: DATABASE_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DATABASE_NAME
           - name: DATABASE_USER
             valueFrom:
               configMapKeyRef:
@@ -72,6 +63,36 @@ spec:
               configMapKeyRef:
                 name: hello-config
                 key: DELIVERY_SERVICE
+          - name: FINDER_SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: FINDER_SERVICE
+          - name: NOTIFICATION_SERVICE
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: NOTIFICATION_SERVICE
+          - name: KAFKA_SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: KAFKA_SERVER
+          - name: REDIS_SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: REDIS_SERVER
+          - name: ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: ROOT_PASSWORD
+          - name: ROOT_TOKEN
+            valueFrom:
+              configMapKeyRef:
+                name: hello-config
+                key: ROOT_TOKEN
         ports:
         - name: web
           containerPort: 8000
@@ -92,87 +113,11 @@ spec:
       targetPort: web
   type: NodePort
 ---
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: transaction-migrate-job-4
-  labels:
-    app: migrate-job
-spec:
-  template:
-    metadata:
-      name: migrate-job
-      labels:
-        app: migrate-job
-    spec:
-      restartPolicy: Never
-      initContainers:
-      - name: wait-pg
-        image: waisbrot/wait
-        env:
-          - name: TARGETS
-            value: postgres:5432
-      containers:
-      - name: insert
-        env:
-          - name: DJANGO_ENV
-            value: DEV
-          - name: DJANGO_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                name: hello-secret
-                key: DJANGO_SECRET_KEY
-          - name: DATABASE_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DATABASE_NAME
-          - name: DATABASE_USER
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DATABASE_USER
-          - name: DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: hello-secret
-                key: DATABASE_PASSWORD
-          - name: DATABASE_HOST
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DATABASE_HOST
-          - name: DATABASE_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DATABASE_PORT
-          - name: STORE_SERVICE
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: STORE_SERVICE
-          - name: TRANSACTION_SERVICE
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: TRANSACTION_SERVICE
-          - name: DELIVERY_SERVICE
-            valueFrom:
-              configMapKeyRef:
-                name: hello-config
-                key: DELIVERY_SERVICE
-        image: dkuser2/otus-saga-28:v1
-        workingDir: /app/transaction
-        command: ["python", "manage.py", "migrate"]
-  backoffLimit: 0
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: transaction-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     kubernetes.io/ingress.class: nginx
 spec:
   rules:

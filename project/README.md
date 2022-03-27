@@ -23,11 +23,31 @@
 ## Запуск
 
 ```
-minikube start
+minikube start --cpus=4 --memory=4g
 minikube addons enable ingress
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install kafka bitnami/kafka
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+helm install prom prometheus-community/kube-prometheus-stack -f prometheus.yaml --atomic
 
 # namespace: default
 kubectl apply -f manifest
+
+# saga: http://arch.homework/
+# kafka-ui: http://arch.homework/kafkaui/
+# pg: kubectl port-forward service/postgres 5433:5432
+```
+
+## Команды
+**Grafana**, user:password - admin:prom-operator
+```
+minikube service prometheus-grafana-nodeport
+```
+**Prometheus**
+```
+minikube service prom-prometheus-nodeport
 ```
 
 ## Проверка

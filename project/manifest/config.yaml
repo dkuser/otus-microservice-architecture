@@ -10,6 +10,12 @@ data:
   STORE_SERVICE: "http://store:8000"
   TRANSACTION_SERVICE: "http://transaction:8000"
   DELIVERY_SERVICE: "http://delivery:8000"
+  FINDER_SERVICE: "http://finder:8000"
+  NOTIFICATION_SERVICE: "http://notifications:8000"
+  KAFKA_SERVER: "kafka:9092"
+  REDIS_SERVER: "redis:6379"
+  ROOT_PASSWORD: "admin"
+  ROOT_TOKEN: "123qwe0-="
 ---
 apiVersion: v1
 kind: Secret

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafkaui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafkaui-app
+  template:
+    metadata:
+      labels:
+        app: kafkaui-app
+    spec:
+      containers:
+      - name: kafkaui
+        imagePullPolicy: IfNotPresent
+        image: provectuslabs/kafka-ui:latest
+        ports:
+        - name: web
+          containerPort: 8080
+        env:
+          - name: KAFKA_CLUSTERS_0_NAME
+            value: "local"
+          - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+            value: "kafka:9092"
+          - name: KAFKA_CLUSTERS_0_ZOOKEEPER
+            value: "zookeeper:2181"
+          - name: SERVER_SERVLET_CONTEXT_PATH
+            value: "/kafkaui"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafkaui
+  labels:
+    app: kafkaui-app
+spec:
+  selector:
+    app: kafkaui-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      name: web
+      targetPort: web
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kafkaui-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: arch.homework
+    http:
+      paths:
+      - path: /kafkaui(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: kafkaui
+            port:
+              number: 8080
